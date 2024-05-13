@@ -1,8 +1,6 @@
 const http = require('http')
 
-// 2084 
-
-const db = [
+let db = [
     {
         'title': 'What did the mic tell the user? Stop spitting on me',
         'comedian': 'John Doe',
@@ -30,8 +28,33 @@ const db = [
 ]
 
 const server = http.createServer((req, res) => {
-    
-
+    if (req.url === '/' && req.method === 'GET'){
+        res.writeHead(200)
+        res.end(JSON.stringify({"data": db, "message": "Data fetched successfully"}))
+    } else if (req.url === '/jokes/1' && req.method === 'PATCH'){
+        const id = +req.url.split('/')[2]
+        const body = []
+        req.on("data", (chunk) =>{
+            body.push(chunk)
+        })
+        req.on('end', ()=>{
+            const updateResponse = JSON.parse(Buffer.concat(body).toString())
+            const updatedDb = db.map((item) =>{
+                if (item.id === id){
+                    return {
+                        ... item,
+                        ...updateResponse
+                    }
+                }
+                return item
+            })
+            db = updatedDb;
+            res.end(JSON.stringify(db))
+        })
+    } else {
+        res.writeHead(404)
+        res.end(JSON.stringify({"error": "true", "message": "Error encountered!"}))
+    }
 })
 
 server.listen(3000, () => console.log('Server running perfectly!'))
