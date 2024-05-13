@@ -1,5 +1,6 @@
 const http = require('http')
 
+// db database resource (array of objects)
 let db = [
     {
         'title': 'What did the mic tell the user? Stop spitting on me',
@@ -28,10 +29,25 @@ let db = [
 ]
 
 const server = http.createServer((req, res) => {
+    // Handling GET request
     if (req.url === '/' && req.method === 'GET'){
         res.writeHead(200)
         res.end(JSON.stringify({"data": db, "message": "Data fetched successfully"}))
-    } else if (req.url === '/jokes/1' && req.method === 'PATCH'){
+    } 
+    // Handling POST requests
+    else if (req.url === '/' && req.method === 'POST'){
+        const body = []
+        req.on("data", (chunk) =>{
+            body.push(chunk)
+        })
+        req.on('end', ()=>{
+            const additionalJoke = JSON.parse(Buffer.concat(body).toString())
+            db.push(additionalJoke)
+            res.end(JSON.stringify(db))
+        })
+    } 
+    // Handling PATCH requests
+    else if (req.url === '/jokes/1' && req.method === 'PATCH'){
         const id = +req.url.split('/')[2]
         const body = []
         req.on("data", (chunk) =>{
@@ -49,7 +65,6 @@ const server = http.createServer((req, res) => {
                 return item
             })
             db = updatedDb;
-            console.log(db)
             res.end(JSON.stringify(resJokes))
         })
     } else {
