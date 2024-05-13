@@ -69,7 +69,7 @@ const server = http.createServer((req, res) => {
         })
     } 
     // Handling DELETE requests
-    else if (req.url === '/jokes/2' && req.method === 'DELETE'){
+    else if (req.url === '/jokes/1' && req.method === 'DELETE'){
         const id = +req.url.split('/')[2]
         const newDb = db.filter(item => item.id !== id) // creates a new database for client
         const delJoke = db.filter(item => item.id === id) // gets the deleted joke
