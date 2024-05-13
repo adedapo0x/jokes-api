@@ -67,7 +67,15 @@ const server = http.createServer((req, res) => {
             db = updatedDb;
             res.end(JSON.stringify(resJokes))
         })
-    } else {
+    } 
+    // Handling DELETE requests
+    else if (req.url === '/jokes/2' && req.method === 'DELETE'){
+        const id = +req.url.split('/')[2]
+        const newDb = db.filter(item => item.id !== id) // creates a new database for client
+        const delJoke = db.filter(item => item.id === id) // gets the deleted joke
+        res.end(JSON.stringify(delJoke))        
+    }
+    else {
         res.writeHead(404)
         res.end(JSON.stringify({"error": "true", "message": "Error encountered!"}))
     }
