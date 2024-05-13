@@ -41,7 +41,7 @@ const server = http.createServer((req, res) => {
             const updateResponse = JSON.parse(Buffer.concat(body).toString())
             const updatedDb = db.map((item) =>{
                 if (item.id === id){
-                    return {
+                    return resJokes = {
                         ... item,
                         ...updateResponse
                     }
@@ -49,7 +49,8 @@ const server = http.createServer((req, res) => {
                 return item
             })
             db = updatedDb;
-            res.end(JSON.stringify(db))
+            console.log(db)
+            res.end(JSON.stringify(resJokes))
         })
     } else {
         res.writeHead(404)
